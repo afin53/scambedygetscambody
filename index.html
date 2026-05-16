@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка...</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #050505;
+            color: #ff003c;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Кнопка старта */
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: #fff;
+            background: transparent;
+            border: 2px solid #ff003c;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 10px #ff003c;
+            transition: 0.3s;
+        }
+
+        #start-btn:hover {
+            background: #ff003c;
+            box-shadow: 0 0 25px #ff003c;
+        }
+
+        /* Контейнер для текста */
+        #text-container {
+            display: none;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 0, 60, 0.6);
+            padding: 20px;
+        }
+
+        /* Стиль для каждой появляющейся буквы */
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: spawn 0.4s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                      glitch 1s infinite alternate;
+        }
+
+        /* Эффект резкого появления буквы */
+        @keyframes spawn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Постоянный глитч-эффект на буквах (вибрация и искажение цвета) */
+        @keyframes glitch {
+            0% {
+                transform: translate(0) skew(0deg);
+                text-shadow: -2px 0 #00fff0, 2px 0 #ff003c;
+            }
+            20% {
+                transform: translate(-2px, 2px) skew(-1deg);
+                text-shadow: -3px 0 #00fff0, 3px 0 #ff003c;
+            }
+            40% {
+                transform: translate(1px, -1px) skew(1deg);
+                text-shadow: -1px 0 #00fff0, 1px 0 #ff003c;
+            }
+            60% {
+                transform: translate(-1px, 1px) skew(0deg);
+            }
+            100% {
+                transform: translate(0);
+                text-shadow: -2px 0 #00fff0, 2px 0 #ff003c;
+            }
+        }
+
+        /* Эффект красной вспышки на весь экран при басах (под музыку) */
+        .flash-effect {
+            animation: screen-flash 0.5s infinite alternate;
+        }
+
+        @keyframes screen-flash {
+            0% { background-color: #050505; }
+            100% { background-color: #1a0006; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="start-btn">Я не робот</button>
+
+    <div id="text-container"></div>
+
+    <audio id="bg-music" src="http://googleusercontent.com/file_content/0" loop></audio>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const textContainer = document.getElementById('text-container');
+        const music = document.getElementById('bg-music');
+
+        const message = "Ты не прошёл проверку на робота";
+
+        startBtn.addEventListener('click', () => {
+            // Прячем кнопку и запускаем музыку
+            startBtn.style.display = 'none';
+            textContainer.style.display = 'block';
+            music.play();
+
+            // Включаем эффект «мигания» заднего фона в такт клубной музыке
+            document.body.classList.add('flash-effect');
+
+            // Разбиваем текст на буквы и запускаем поочередное появление
+            message.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                
+                // Если это пробел, сохраняем его структуру
+                if (char === ' ') {
+                    span.innerHTML = '&nbsp;';
+                } else {
+                    span.textContent = char;
+                }
+
+                span.classList.add('letter');
+                
+                // Скорость появления (задержка между буквами — 150 миллисекунд)
+                span.style.animationDelay = `${index * 0.15}s, ${index * 0.15 + 0.4}s`;
+
+                textContainer.appendChild(span);
+            });
+        });
+    </script>
+</body>
+</html>
